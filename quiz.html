@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #quiz-wrapper {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            background-color: #008CBA;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .option-btn:hover {
+            background-color: #005f73;
+        }
+        #next {
+            display: none;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        #next:hover {
+            background-color: #45a049;
+        }
+        #progress-container {
+            width: 100%;
+            background-color: #ddd;
+            height: 10px;
+            margin-top: 20px;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 10px;
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-wrapper">
+        <h1>Interactive Quiz</h1>
+        <div id="quiz-container">
+            <div id="question" style="font-size: 20px; margin-bottom: 10px;"></div>
+            <div id="options"></div>
+            <div id="result" style="margin-top: 10px; font-weight: bold;"></div>
+            <button id="next">Next</button>
+        </div>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is the capital of France?", options: ["Paris", "London", "Rome", "Berlin"], answer: "Paris" },
+            { question: "Which language runs in a web browser?", options: ["Java", "C++", "Python", "JavaScript"], answer: "JavaScript" },
+            { question: "What does CSS stand for?", options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"], answer: "Cascading Style Sheets" },
+            { question: "Which HTML tag is used to create a hyperlink?", options: ["<a>", "<link>", "<href>", "<nav>"], answer: "<a>" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById("question");
+        const optionsContainer = document.getElementById("options");
+        const nextButton = document.getElementById("next");
+        const resultContainer = document.getElementById("result");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            optionsContainer.innerHTML = "";
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.classList.add("option-btn");
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+        }
+
+        function checkAnswer(selectedOption) {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            if (selectedOption === correctAnswer) {
+                score++;
+                resultContainer.textContent = "Correct!";
+                resultContainer.style.color = "green";
+            } else {
+                resultContainer.textContent = `Wrong! Correct answer: ${correctAnswer}`;
+                resultContainer.style.color = "red";
+            }
+            nextButton.style.display = "block";
+        }
+
+        nextButton.addEventListener("click", () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                resultContainer.textContent = "";
+                nextButton.style.display = "none";
+            } else {
+                document.getElementById("quiz-container").innerHTML = `<h2>Your Score: ${score}/${questions.length}</h2>`;
+            }
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>
